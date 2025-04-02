@@ -1,10 +1,8 @@
 "use client";
 
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-
-const baseURL = "http://localhost:3000/notas";
+import api from "@/utils/api";
 
 export default function BlocoNotas() {
   const [notas, setNotas] = useState([]);
@@ -16,7 +14,7 @@ export default function BlocoNotas() {
   const [edit, setEdit] = useState(null);
 
   const fetchNotas = async () => {
-    const result = await axios.get(baseURL);
+    const result = await api.get("/notas");
     setNotas(result.data);
   };
 
@@ -24,9 +22,9 @@ export default function BlocoNotas() {
     e.preventDefault();
     try {
       if (edit) {
-        await axios.put(`${baseURL}/${edit}`, formData);
+        await api.put(`/notas/${edit}`, formData);
       } else {
-        await axios.post(baseURL, formData);
+        await api.post('/notas', formData);
       }
       setFormData({ title: "", description: "", deadline: "" });
       setEdit(null);
@@ -51,7 +49,7 @@ export default function BlocoNotas() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseURL}/${id}`);
+      await api.delete(`notas/${id}`);
       fetchNotas();
     } catch (error) {
       console.error("Erro ao apagar nota", error);
